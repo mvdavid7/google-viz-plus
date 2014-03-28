@@ -8,9 +8,14 @@ gvizPlus._construct = function() {
         this.rows = [];
     }
 
+    function VAxis(lines) {
+        this.lines = lines;
+    }
+
     function DataSet(hAxis) {
         this.categories = [];
         this.hAxis = hAxis;
+        this.vAxes = [];
 
         this.getOrCreateCategoryIndex = function(name) {
             var index = -1;
@@ -28,14 +33,34 @@ gvizPlus._construct = function() {
             return index;
         }
 
-        this.addCategory = function(category, columns, rows) {
+        this.addCategory = function(category, lines, rows) {
             var index = this.getOrCreateCategoryIndex(category);
-            for(var i = 0; i < columns.length; i++) {
-                this.categories[index].columns.push(columns[i]);
+            for(var i = 0; i < lines.length; i++) {
+                this.categories[index].columns.push(lines[i]);
             }
             for(var i = 0; i < rows.length; i++) {
                 this.categories[index].rows.push(rows[i]);
             }
+        }
+
+        this.addAxis = function(lines) {
+            this.vAxes.push(new VAxis(lines));
+        }
+
+        this.getColumnId = function(line) {
+            var columnId = 0;
+            for(var i = 0; i < this.categories.length; i++) {
+                var category = this.categories[i];
+                var index = category.columns.indexOf(line);
+                if(index != -1) {
+                    columnId += index;
+                    break;
+                } else {
+                    columnId += category.columns.length;
+                }
+            }
+
+            return columnId;
         }
     }
 
@@ -44,11 +69,10 @@ gvizPlus._construct = function() {
 
         // Drawing properties
         this.title = title;
-        this.hAxisTitle = "";
         this.width = 1000;
         this.height = 500;
 
-        this.draw = function(dataSet) {
+        this.generateDataTable = function(dataSet) {
             var dataTable = new google.visualization.DataTable();
             dataTable.addColumn(dataSet.hAxis);
             for (var i = 0; i < dataSet.categories.length; i++) {
@@ -80,15 +104,43 @@ gvizPlus._construct = function() {
                 }
             }
 
+            return dataTable;
+        }
+
+        this.generateGoogleAxisInfo = function(dataSet) {
+            var googleAxisInfo = new Object();
+            googleAxisInfo.vAxis = {0: {textPosition:'none'}};
+            googleAxisInfo.series = {};
+            if (dataSet.vAxes.length > 0) {
+                for (var i = 0; i < dataSet.vAxes.length; i++) {
+                    var vAxis = dataSet.vAxes[i];
+                    googleAxisInfo.vAxis[i + 1] = {textPosition:'none'};
+
+                    for (var j = 0; j < vAxis.lines.length; j++) {
+                        var line = vAxis.lines[j];
+                        var columnId = dataSet.getColumnId(line); // Lines map to columns in the dataTable
+
+                        googleAxisInfo.series[columnId] = {targetAxisIndex:i + 1};
+                    }
+                }
+            }
+
+            return googleAxisInfo;
+        }
+
+        this.draw = function(dataSet) {
+            var dataTable = this.generateDataTable(dataSet);
+            var googleAxisInfo = this.generateGoogleAxisInfo(dataSet);
+
             this.chart.draw(dataTable, {
               title : this.title,
               legend : 'none', // We'll draw a better legend
               interpolateNulls : false,
               width: this.width,
               height: this.height,
-              vAxis: {0: {}, 1: {}},
-              hAxis: { title: this.hAxisTitle },
-              series: {1: {targetAxisIndex:1}}
+              hAxis: {title: dataSet.hAxis['label']},
+              vAxes: googleAxisInfo.vAxis,
+              series: googleAxisInfo.series
             });
         }
     }

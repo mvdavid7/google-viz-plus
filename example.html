@@ -104,6 +104,10 @@
         dataSet.addCategory('Chart 1 Category', [lineA, lineB], set1Rows);
         dataSet.addCategory('Chart 2 Category', [lineC, lineD, lineE], set2Rows);
 
+        // You can even group lines in different axes
+        dataSet.addAxis([lineA, lineC, lineD]);
+        dataSet.addAxis([lineB]);
+
         // Then render
         graph.draw(dataSet);
       }
