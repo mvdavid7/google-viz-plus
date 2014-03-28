@@ -1,6 +1,13 @@
 var gvizPlus = {}
 gvizPlus._construct = function() {
 
+    var colors = ['blue', 'red', 'green', 'purple', 'black'];
+    var colorIndex = 0;
+
+    function VAxis(id) {
+        this.id = id;
+    }
+
     function Line(column) {
         this.column = column;
         this.visible = true;
@@ -13,13 +20,9 @@ gvizPlus._construct = function() {
         this.rows = [];
     }
 
-    function VAxis(lines) {
-        this.lines = lines;
-    }
-
     function DataSet(hAxis) {
         this.categories = [];
-        this.allLines = [];
+        this.allLines = new Object();
         this.hAxis = hAxis;
         this.vAxes = [];
 
@@ -43,7 +46,9 @@ gvizPlus._construct = function() {
             var index = this.getOrCreateCategoryIndex(category);
             for(var i = 0; i < lines.length; i++) {
                 var lineObj = new Line(lines[i]);
-                this.allLines[lines[i]] = lineObj;
+                lineObj.color = colors[colorIndex];
+                colorIndex += 1;
+                this.allLines[lines[i].label] = lineObj;
                 this.categories[index].lines.push(lineObj);
             }
             for(var i = 0; i < rows.length; i++) {
@@ -52,11 +57,11 @@ gvizPlus._construct = function() {
         }
 
         this.addAxis = function(lines) {
-            var axisLines = [];
+            var vAxis = new VAxis(this.vAxes.length);
             for(var i = 0; i < lines.length; i++) {
-                axisLines.push(this.allLines[lines[i]]);
+                this.allLines[lines[i].label].vAxis = vAxis;
             }
-            this.vAxes.push(new VAxis(axisLines));
+            this.vAxes.push(vAxis);
         }
 
         this.getColumnId = function(line, includeHidden) {
@@ -121,21 +126,25 @@ gvizPlus._construct = function() {
 
         this.generateGoogleAxisInfo = function(dataSet) {
             var googleAxisInfo = new Object();
-            googleAxisInfo.vAxis = {0: {textPosition:'none'}};
+            googleAxisInfo.vAxis = {0:{textPosition:'none'}};
             googleAxisInfo.series = {};
             if (dataSet.vAxes.length > 0) {
                 for (var i = 0; i < dataSet.vAxes.length; i++) {
                     var vAxis = dataSet.vAxes[i];
-                    googleAxisInfo.vAxis[i + 1] = {textPosition:'none'};
+                    googleAxisInfo.vAxis[vAxis.id] = {textPosition:'none'};
+                }
+            }
 
-                    for (var j = 0; j < vAxis.lines.length; j++) {
-                        var line = vAxis.lines[j];
+            for (key in dataSet.allLines) {
+                var line = dataSet.allLines[key];
 
-                        if (line.visible) {
-                            var columnId = dataSet.getColumnId(line, false); // Lines map to columns in the dataTable
-                            googleAxisInfo.series[columnId] = {targetAxisIndex:i + 1};
-                        }
+                if (line.visible) {
+                    var columnId = dataSet.getColumnId(line, false); // Lines map to columns in the dataTable
+                    var vAxisId = 0;
+                    if (line.vAxis) {
+                        vAxisId = line.vAxis.id + 1;
                     }
+                    googleAxisInfo.series[columnId] = {targetAxisIndex:vAxisId, color:line.color};
                 }
             }
 
