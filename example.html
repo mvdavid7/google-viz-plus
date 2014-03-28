@@ -13,23 +13,53 @@
     <script type="text/javascript">
       function drawVisualization() {
 
+        // If you have data for google with a common horizontal axis...
+        var hAxis = {type:'datetime', label:'Time'};
+
+        // And several different lines to plot...
+        var lineA = {type:'number', label:'Line A'};
+        var lineB = {type:'number', label:'Line B'};
+        var set1Rows = [
+                        [new Date(1.395943214e+12),15,0],
+                        [new Date(1.395943215e+12),65,0],
+                        [new Date(1.395943216e+12),10,0],
+                        [new Date(1.395943218e+12),35,0],
+                        [new Date(1.395943219e+12),35,0],
+                        [new Date(1.39594322e+12),40,0],
+                        [new Date(1.395943221e+12),30,0],
+                        [new Date(1.395943222e+12),35,0],
+                        [new Date(1.395943223e+12),50,0],
+                        [new Date(1.395943224e+12),30,0],
+                        [new Date(1.395943225e+12),20,0]
+                    ];
+
+        // Even split up over different sets...
+        var lineC = {type:'number', label:'Line C'};
+        var lineD = {type:'number', label:'Line D'};
+        var lineE = {type:'number', label:'Line E'};
+        var set2Rows = [
+                        [new Date(1.39594321e+12),0,0,0],
+                        [new Date(1.39594322e+12),0,0,0],
+                        [new Date(1.39594323e+12),0,0,0],
+                        [new Date(1.39594324e+12),0,0,0],
+                        [new Date(1.39594325e+12),0,0,0],
+                        [new Date(1.39594326e+12),0,0,0],
+                        [new Date(1.39594327e+12),32,30,176],
+                        [new Date(1.39594328e+12),45,47,593],
+                        [new Date(1.39594329e+12),47,47,224],
+                        [new Date(1.3959433e+12),41,41,39],
+                        [new Date(1.39594331e+12),111,109,40],
+                        [new Date(1.39594332e+12),77,79,39],
+                        [new Date(1.39594333e+12),113,113,59],
+                        [new Date(1.39594334e+12),157,157,47]
+                    ];
+
+        // You could graph it with just google...
         var dataTable1 = new google.visualization.DataTable();
-        dataTable1.addColumn('datetime', 'Date');
-        dataTable1.addColumn('number', 'Line A');
-        dataTable1.addColumn('number', 'Line B');
-        dataTable1.addRows([
-                    [new Date(1.395943214e+12),15,0],
-                    [new Date(1.395943215e+12),65,0],
-                    [new Date(1.395943216e+12),10,0],
-                    [new Date(1.395943218e+12),35,0],
-                    [new Date(1.395943219e+12),35,0],
-                    [new Date(1.39594322e+12),40,0],
-                    [new Date(1.395943221e+12),30,0],
-                    [new Date(1.395943222e+12),35,0],
-                    [new Date(1.395943223e+12),50,0],
-                    [new Date(1.395943224e+12),30,0],
-                    [new Date(1.395943225e+12),20,0]
-        ]);
+        dataTable1.addColumn(hAxis);
+        dataTable1.addColumn(lineA);
+        dataTable1.addColumn(lineB);
+        dataTable1.addRows(set1Rows);
 
         var googleChart1 = new google.visualization.LineChart(document.getElementById('googleChart1'));
         googleChart1.draw(dataTable1, {
@@ -37,31 +67,17 @@
           width: 1000,
           height: 500,
           vAxis: {0: {}, 1: {}},
-          hAxis: {title: "Time"},
+          hAxis: hAxis,
           series: {1: {targetAxisIndex:1}}
         });
 
+        // In multiple unrelated charts...
         var dataTable2 = new google.visualization.DataTable();
-        dataTable2.addColumn('datetime', 'Date');
-        dataTable2.addColumn('number', 'Line C');
-        dataTable2.addColumn('number', 'Line D');
-        dataTable2.addColumn('number', 'Line E');
-        dataTable2.addRows([
-                    [new Date(1.39594321e+12),0,0,0],
-                    [new Date(1.39594322e+12),0,0,0],
-                    [new Date(1.39594323e+12),0,0,0],
-                    [new Date(1.39594324e+12),0,0,0],
-                    [new Date(1.39594325e+12),0,0,0],
-                    [new Date(1.39594326e+12),0,0,0],
-                    [new Date(1.39594327e+12),32,30,176],
-                    [new Date(1.39594328e+12),45,47,593],
-                    [new Date(1.39594329e+12),47,47,224],
-                    [new Date(1.3959433e+12),41,41,39],
-                    [new Date(1.39594331e+12),111,109,40],
-                    [new Date(1.39594332e+12),77,79,39],
-                    [new Date(1.39594333e+12),113,113,59],
-                    [new Date(1.39594334e+12),157,157,47]
-        ]);
+        dataTable2.addColumn(hAxis);
+        dataTable2.addColumn(lineC);
+        dataTable2.addColumn(lineD);
+        dataTable2.addColumn(lineE);
+        dataTable2.addRows(set2Rows);
 
         var googleChart2 = new google.visualization.LineChart(document.getElementById('googleChart2'));
         googleChart2.draw(dataTable2, {
@@ -69,27 +85,27 @@
           width: 1000,
           height: 500,
           vAxis: {0: {}, 1: {}},
-          hAxis: {title: "Time"},
+          hAxis: hAxis,
           series: {1: {targetAxisIndex:1}}
         });
 
-        var dataSet1 = new gvizPlus.DataSet('Data Table 1', dataTable1);
-        var dataSet2 = new gvizPlus.DataSet('Data Table 2', dataTable2);
-
+        // OR you could do simply combine it into one customizable chart with gvizPlus
         // Create your graph by specifying the DIV and title
         var graph = new gvizPlus.Graph('awesomeGraphDiv', 'Awesome Graph');
 
         // Set any properties
-        graph.hAxisTitle = "Time";
         graph.width = window.innerWidth - 50;
         graph.height = window.innerHeight;
 
-        // Add all the data sets you want
-        graph.addDataSet(dataSet1);
-        graph.addDataSet(dataSet2);
+        // Initialize the dataset
+        var dataSet = new gvizPlus.DataSet(hAxis);
+
+        // Grouping lines by categories
+        dataSet.addCategory('Chart 1 Category', [lineA, lineB], set1Rows);
+        dataSet.addCategory('Chart 2 Category', [lineC, lineD, lineE], set2Rows);
 
         // Then render
-        graph.draw();
+        graph.draw(dataSet);
       }
       google.setOnLoadCallback(drawVisualization);
     </script>
