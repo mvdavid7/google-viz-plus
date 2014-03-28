@@ -172,7 +172,9 @@ gvizPlus._construct = function() {
 
             addText(this.div, this.title);
 
+            var googleDiv = addElement(this.div, 'div', id + '_google');
             var legendDiv = addElement(this.div, 'div', id + '_legend');
+            legendDiv.setAttribute('style', 'position: absolute;top: 50px');
             addText(legendDiv, 'Legend');
 
             for (var i = 0; i < dataSet.categories.length; i++) {
@@ -183,6 +185,7 @@ gvizPlus._construct = function() {
                 for(var j = 0; j < category.lines.length; j++) {
                     var line = category.lines[j];
                     var lineDiv = addElement(categoryDiv, 'div', 'line_' + line.column.label);
+                    lineDiv.setAttribute('style', 'background-color: ' + line.color + ';color:white');
                     addText(lineDiv, line.column.label);
 
                     lineDiv.style.cursor = 'pointer';
@@ -205,7 +208,6 @@ gvizPlus._construct = function() {
                 }
             }
 
-            var googleDiv = addElement(this.div, 'div', id + '_google');
             this.googleChart = new google.visualization.LineChart(googleDiv);
             this.googleDraw();
         }
