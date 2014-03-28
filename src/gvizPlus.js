@@ -1,7 +1,7 @@
 var gvizPlus = {}
 gvizPlus._construct = function() {
 
-    var colors = ['blue', 'red', 'green', 'purple', 'black'];
+    var colors = ['blue', 'red', 'green', 'purple', 'orange'];
     var colorIndex = 0;
 
     function VAxis(id) {
@@ -131,7 +131,7 @@ gvizPlus._construct = function() {
             if (dataSet.vAxes.length > 0) {
                 for (var i = 0; i < dataSet.vAxes.length; i++) {
                     var vAxis = dataSet.vAxes[i];
-                    googleAxisInfo.vAxis[vAxis.id] = {textPosition:'none'};
+                    googleAxisInfo.vAxis[vAxis.id + 1] = {textPosition:'none'};
                 }
             }
 
