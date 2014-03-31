@@ -88,6 +88,8 @@ gvizPlus._construct = function() {
         this.title = title;
         this.width = 1000;
         this.height = 500;
+        this.legendWith = 250;
+        this.axisWidth = 100;
 
         this.generateDataTable = function(dataSet) {
             var dataTable = new google.visualization.DataTable();
@@ -175,7 +177,6 @@ gvizPlus._construct = function() {
             var googleDiv = addElement(this.div, 'div', id + '_google');
             var legendDiv = addElement(this.div, 'div', id + '_legend');
             legendDiv.setAttribute('style', 'position: absolute;top: 50px');
-            addText(legendDiv, 'Legend');
 
             for (var i = 0; i < dataSet.categories.length; i++) {
                 var category = dataSet.categories[i];
@@ -213,11 +214,13 @@ gvizPlus._construct = function() {
         }
 
         this.googleDraw = function() {
+            var chartWidth = this.width - this.legendWith - this.axisWidth;
             var googleAxisInfo = this.generateGoogleAxisInfo(this.dataSet);
             this.googleChart.draw(this.googleDataView, {
               title : null,
               legend : 'none', // We'll draw a better legend
               interpolateNulls : false,
+              chartArea : { left: this.legendWith, top: 0, width: chartWidth, height: '80%' },
               width: this.width,
               height: this.height,
               hAxis: this.googleHAxis,
