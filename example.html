@@ -103,7 +103,7 @@
 
         var googleChart1 = new google.visualization.LineChart(document.getElementById('googleChart1'));
         googleChart1.draw(dataTable1, {
-          title : 'Chart 1',
+          title : 'Chart 1 (using the Google API directly)',
           width: 1000,
           height: 500,
           vAxis: {0: {}, 1: {}},
@@ -121,7 +121,7 @@
 
         var googleChart2 = new google.visualization.LineChart(document.getElementById('googleChart2'));
         googleChart2.draw(dataTable2, {
-          title : 'Chart 2',
+          title : 'Chart 2 (using the Google API directly)',
           width: 1000,
           height: 500,
           vAxis: {0: {}, 1: {}},
@@ -131,7 +131,7 @@
 
         // OR you could do simply combine it into one customizable chart with gvizPlus
         // Create your graph by specifying the DIV and title
-        var graph = new gvizPlus.Graph('awesomeGraphDiv', 'Awesome Graph');
+        var graph = new gvizPlus.Graph('awesomeGraphDiv', 'Google Viz Plus Graph');
 
         // Set any properties
         graph.width = window.innerWidth - 50;
@@ -162,3 +162,5 @@
 
   </body>
 </html>
+
+
