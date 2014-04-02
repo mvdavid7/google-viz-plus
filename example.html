@@ -6,7 +6,7 @@
       Google Viz Plus Example
     </title>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-    <script type="text/javascript" src="releases/gvizPlus-0.1.0.js"></script>
+    <script type="text/javascript" src="releases/gvizPlus-0.2.0.js"></script>
     <script type="text/javascript">
       google.load('visualization', '1', {packages: ['corechart']});
     </script>
@@ -145,8 +145,8 @@
         dataSet.addCategory('Chart 2 Category', [lineC, lineD, lineE], set2Rows);
 
         // You can even group lines in different axes
-        dataSet.addAxis([lineA, lineC, lineD]);
-        dataSet.addAxis([lineB]);
+        dataSet.addAxis('Axis 1', [lineA, lineC, lineD]);
+        dataSet.addAxis('Axis 2', [lineB]);
 
         // Then render
         graph.draw(dataSet);
