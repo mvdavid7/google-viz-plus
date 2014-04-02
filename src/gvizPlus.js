@@ -4,8 +4,10 @@ gvizPlus._construct = function() {
     var colors = ['blue', 'red', 'green', 'purple', 'orange'];
     var colorIndex = 0;
 
-    function VAxis(id) {
+    function VAxis(id, name) {
         this.id = id;
+        this.name = name;
+        this.visible = false;
     }
 
     function Line(column) {
@@ -24,7 +26,7 @@ gvizPlus._construct = function() {
         this.categories = [];
         this.allLines = new Object();
         this.hAxis = hAxis;
-        this.vAxes = [];
+        this.vAxes = [new VAxis(0, 'Default')];
 
         this.getOrCreateCategoryIndex = function(name) {
             var index = -1;
@@ -46,6 +48,7 @@ gvizPlus._construct = function() {
             var index = this.getOrCreateCategoryIndex(category);
             for(var i = 0; i < lines.length; i++) {
                 var lineObj = new Line(lines[i]);
+                lineObj.vAxis = this.vAxes[0];
                 lineObj.color = colors[colorIndex];
                 colorIndex += 1;
                 this.allLines[lines[i].label] = lineObj;
@@ -56,8 +59,8 @@ gvizPlus._construct = function() {
             }
         }
 
-        this.addAxis = function(lines) {
-            var vAxis = new VAxis(this.vAxes.length);
+        this.addAxis = function(name, lines) {
+            var vAxis = new VAxis(this.vAxes.length, name);
             for(var i = 0; i < lines.length; i++) {
                 this.allLines[lines[i].label].vAxis = vAxis;
             }
@@ -133,7 +136,11 @@ gvizPlus._construct = function() {
             if (dataSet.vAxes.length > 0) {
                 for (var i = 0; i < dataSet.vAxes.length; i++) {
                     var vAxis = dataSet.vAxes[i];
-                    googleAxisInfo.vAxis[vAxis.id + 1] = {textPosition:'none'};
+                    if(vAxis.visible) {
+                        googleAxisInfo.vAxis[vAxis.id + 1] = {textPosition: 'out', title: vAxis.name};
+                    } else {
+                        googleAxisInfo.vAxis[vAxis.id + 1] = {textPosition: 'none'};
+                    }
                 }
             }
 
@@ -176,7 +183,7 @@ gvizPlus._construct = function() {
 
             var googleDiv = addElement(this.div, 'div', id + '_google');
             var legendDiv = addElement(this.div, 'div', id + '_legend');
-            legendDiv.setAttribute('style', 'position: absolute;top: 50px');
+            legendDiv.setAttribute('style', 'position: absolute;top: 50px;width: ' + (this.legendWith - 10) + 'px');
 
             for (var i = 0; i < dataSet.categories.length; i++) {
                 var category = dataSet.categories[i];
@@ -185,8 +192,9 @@ gvizPlus._construct = function() {
 
                 for(var j = 0; j < category.lines.length; j++) {
                     var line = category.lines[j];
+
                     var lineDiv = addElement(categoryDiv, 'div', 'line_' + line.column.label);
-                    lineDiv.setAttribute('style', 'background-color: ' + line.color + ';color:white');
+                    lineDiv.setAttribute('style', 'background-color: ' + line.color + ';color: white;');
                     addText(lineDiv, line.column.label);
 
                     lineDiv.style.cursor = 'pointer';
@@ -204,6 +212,24 @@ gvizPlus._construct = function() {
                                 gvizPlus.googleDataView.setColumns(currColumns);
                             }
                             gvizPlus.googleDraw();
+                        }
+                    }(this, line);
+
+                    lineDiv.onmouseover = function(gvizPlus, line) {
+                        return function() {
+                            if (line.vAxis) {
+                                line.vAxis.visible = true;
+                                gvizPlus.googleDraw();
+                            }
+                        }
+                    }(this, line);
+
+                    lineDiv.onmouseout = function(gvizPlus, line) {
+                        return function() {
+                            if (line.vAxis) {
+                                line.vAxis.visible = false;
+                                gvizPlus.googleDraw();
+                            }
                         }
                     }(this, line);
                 }

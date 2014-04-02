@@ -145,8 +145,8 @@
         dataSet.addCategory('Chart 2 Category', [lineC, lineD, lineE], set2Rows);
 
         // You can even group lines in different axes
-        dataSet.addAxis([lineA, lineC, lineD]);
-        dataSet.addAxis([lineB]);
+        dataSet.addAxis('Axis 1', [lineA, lineC, lineD]);
+        dataSet.addAxis('Axis 2', [lineB]);
 
         // Then render
         graph.draw(dataSet);
