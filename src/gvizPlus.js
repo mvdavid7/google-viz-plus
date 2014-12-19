@@ -1,9 +1,6 @@
 var gvizPlus = {}
 gvizPlus._construct = function() {
 
-    var colors = ['blue', 'red', 'green', 'purple', 'orange'];
-    var colorIndex = 0;
-
     function VAxis(id, name) {
         this.id = id;
         this.name = name;
@@ -28,6 +25,23 @@ gvizPlus._construct = function() {
         this.hAxis = hAxis;
         this.vAxes = [new VAxis(0, 'Default')];
 
+        // Default colors. Used http://llllll.li/randomColor/ to generate these
+        this.colors = ['#4c40f7','#c9324b','#0cf44a','#ef81e4','#ef7015',
+                       '#fcfbae','#88eaad','#84db39','#8bf46e','#8bef09','#ffddc9',
+                       '#bcfcae','#4c40f7','#ffc9cd','#e0c582','#21c4a1','#af4933',
+                       '#b25017','#cc764b','#8aea2a','#462099','#ef81e4','#c9324b',
+                       '#b908d1','#77eaa7','#5ec8f9','#b0eaf4','#275f84','#aaea60',
+                       '#e268e2','#f7bbf2','#e5ab75','#91f7ff','#d13c4d','#72e587',
+                       '#f99dd4','#a9fcae','#e55e20','#1a557a','#7529e8','#ff89b8',
+                       '#6b29ad','#90ed74','#ffada3','#cc3bd3','#3940bf','#9fd33f',
+                       '#ff5b87','#0cf44a','#a2f774','#6c3fba','#ddd835','#8feadf',
+                       '#d8b122','#66f9f4','#9303bf','#12698e','#ef5bc5','#efaba0'];
+        this.colorIndex = 0;
+
+        this.setColors = function(newColors) {
+            this.colors = newColors;
+        }
+
         this.getOrCreateCategoryIndex = function(name) {
             var index = -1;
             for(var i = 0; i < this.categories.length; i++) {
@@ -49,8 +63,8 @@ gvizPlus._construct = function() {
             for(var i = 0; i < lines.length; i++) {
                 var lineObj = new Line(lines[i]);
                 lineObj.vAxis = this.vAxes[0];
-                lineObj.color = colors[colorIndex];
-                colorIndex += 1;
+                lineObj.color = this.colors[this.colorIndex];
+                this.colorIndex += 1;
                 this.allLines[lines[i].label] = lineObj;
                 this.categories[index].lines.push(lineObj);
             }

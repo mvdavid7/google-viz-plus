@@ -140,6 +140,9 @@
         // Initialize the dataset
         var dataSet = new gvizPlus.DataSet(hAxis);
 
+        // Set your own colors if you don't like the defaults
+        //dataSet.setColors([...]);
+
         // Grouping lines by categories
         dataSet.addCategory('Chart 1 Category', [lineA, lineB], set1Rows);
         dataSet.addCategory('Chart 2 Category', [lineC, lineD, lineE], set2Rows);
