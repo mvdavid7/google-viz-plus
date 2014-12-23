@@ -6,7 +6,7 @@
       Google Viz Plus Example
     </title>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-    <script type="text/javascript" src="releases/gvizPlus-0.2.0.js"></script>
+    <script type="text/javascript" src="http://mvdavid7.github.io/google-viz-plus/releases/gvizPlus-0.3.0.js"></script>
     <script type="text/javascript">
       google.load('visualization', '1', {packages: ['corechart']});
     </script>
@@ -139,6 +139,9 @@
 
         // Initialize the dataset
         var dataSet = new gvizPlus.DataSet(hAxis);
+
+        // Set your own colors if you don't like the defaults
+        //dataSet.setColors([...]);
 
         // Grouping lines by categories
         dataSet.addCategory('Chart 1 Category', [lineA, lineB], set1Rows);
